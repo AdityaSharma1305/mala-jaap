@@ -10,6 +10,7 @@ import { DailyProgressSheet } from './components/DailyProgressSheet';
 import { HistorySheet } from './components/HistorySheet';
 import { SettingsSheet } from './components/SettingsSheet';
 import { SacredDiyaGlow } from './components/SacredDiyaGlow';
+import { Footer } from './components/Footer';
 import { ChevronUp, EyeOff } from 'lucide-react';
 
 export default function App() {
@@ -38,6 +39,20 @@ export default function App() {
   const [isProgressOpen, setIsProgressOpen] = useState(false);
   const [isDhyanMode, setIsDhyanMode] = useState(false);
   const [showDarshan, setShowDarshan] = useState(true);
+
+  // Close open drawers on Escape key
+  useEffect(() => {
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        setIsHistoryOpen(false);
+        setIsSettingsOpen(false);
+        setIsProgressOpen(false);
+        if (isDhyanMode) setIsDhyanMode(false);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isDhyanMode]);
 
   // Apply theme to document element
   useEffect(() => {
@@ -82,7 +97,7 @@ export default function App() {
           onOpenSettings={() => setIsSettingsOpen(true)}
         />
       ) : (
-        /* Minimal Dhyan mode exit button */
+        /* Minimal Dhyan mode exit bar */
         <div className="w-full max-w-md mx-auto px-4 pt-3 flex justify-between items-center z-20">
           <span className="text-xs font-devanagari text-saffron-600 dark:text-saffron-400 font-bold">
             🕉 ध्यान मुद्रा (एकाग्र चित्त)
@@ -98,7 +113,7 @@ export default function App() {
       )}
 
       {/* 2. Devotional Sanctuary Center Area */}
-      <main className="flex-1 w-full max-w-md mx-auto px-4 flex flex-col items-center justify-between pb-3 z-10">
+      <main className="flex-1 w-full max-w-md mx-auto px-4 flex flex-col items-center justify-between pb-2 z-10">
         {/* Mantra Area */}
         <div className="w-full">
           <MantraSelector
@@ -156,7 +171,10 @@ export default function App() {
         </div>
       </main>
 
-      {/* 3. Mala Completion Experience */}
+      {/* 3. Devotional Footer with Sanskrit Epigram & Privacy/PWA info */}
+      {!isDhyanMode && <Footer />}
+
+      {/* 4. Mala Completion Experience */}
       <CompletionModal
         isOpen={isCompletedModalOpen}
         malaSize={state.malaSize}
@@ -166,7 +184,7 @@ export default function App() {
         onUndo={undo}
       />
 
-      {/* 4. Drawers & Sheets */}
+      {/* 5. Drawers & Sheets */}
       <DailyProgressSheet
         isOpen={isProgressOpen}
         onClose={() => setIsProgressOpen(false)}

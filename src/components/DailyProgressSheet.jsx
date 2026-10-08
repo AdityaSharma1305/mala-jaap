@@ -21,7 +21,7 @@ export function DailyProgressSheet({
   const handleSaveGoal = (e) => {
     e.preventDefault();
     const val = parseInt(goalInput, 10);
-    if (!isNaN(val) && val > 0) {
+    if (!isNaN(val) && val > 0 && val <= 108) {
       onUpdateGoal(val);
     } else {
       onUpdateGoal(null);
@@ -30,8 +30,13 @@ export function DailyProgressSheet({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-[2px]">
-      <div className="fixed inset-0" onClick={onClose} />
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="daily-progress-title"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-[2px]"
+    >
+      <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
 
       <div className="relative w-full max-w-md bg-[var(--bg-canvas)] border-t sm:border border-[var(--border-line)] rounded-t-3xl sm:rounded-2xl p-6 shadow-2xl z-10 max-h-[85vh] overflow-y-auto">
         {/* Handle */}
@@ -39,7 +44,7 @@ export function DailyProgressSheet({
 
         <div className="flex items-center justify-between pb-3 border-b border-[var(--border-line)]">
           <div>
-            <h3 className="text-lg font-devanagari font-semibold text-[var(--text-main)]">
+            <h3 id="daily-progress-title" className="text-lg font-devanagari font-semibold text-[var(--text-main)]">
               आज का जप
             </h3>
             <p className="text-xs font-devanagari text-[var(--text-muted)]">
@@ -48,6 +53,7 @@ export function DailyProgressSheet({
           </div>
           <button
             onClick={onClose}
+            aria-label="बंद करें"
             className="p-1.5 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface)]"
           >
             <X className="w-5 h-5" />
@@ -143,7 +149,7 @@ export function DailyProgressSheet({
 
         {/* Reset Today Confirmation */}
         {showResetConfirm && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
             <div className="bg-[var(--bg-canvas)] border border-[var(--border-line)] rounded-2xl p-6 max-w-xs w-full shadow-xl">
               <h4 className="text-base font-devanagari font-semibold text-[var(--text-main)] text-center">
                 आज का जप रीसेट करें?

@@ -25,8 +25,13 @@ export function SettingsSheet({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-[2px]">
-      <div className="fixed inset-0" onClick={onClose} />
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="settings-title"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-[2px]"
+    >
+      <div className="fixed inset-0" onClick={onClose} aria-hidden="true" />
 
       <div className="relative w-full max-w-md bg-[var(--bg-canvas)] border-t sm:border border-[var(--border-line)] rounded-t-3xl sm:rounded-2xl p-6 shadow-2xl z-10 max-h-[85vh] overflow-y-auto space-y-6">
         {/* Handle for mobile */}
@@ -35,7 +40,7 @@ export function SettingsSheet({
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-[var(--border-line)]">
           <div>
-            <h3 className="text-lg font-devanagari font-semibold text-[var(--text-main)]">
+            <h3 id="settings-title" className="text-lg font-devanagari font-semibold text-[var(--text-main)]">
               सेटिंग्स (प्राथमिकताएं)
             </h3>
             <p className="text-xs font-devanagari text-[var(--text-muted)]">
@@ -44,6 +49,7 @@ export function SettingsSheet({
           </div>
           <button
             onClick={onClose}
+            aria-label="बंद करें"
             className="p-1.5 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface)]"
           >
             <X className="w-5 h-5" />
@@ -126,6 +132,7 @@ export function SettingsSheet({
           </div>
           <button
             onClick={() => onToggleVibration(!vibrationEnabled)}
+            aria-label="कंपन टॉगल करें"
             className={`w-12 h-6 rounded-full transition-colors relative p-0.5 ${
               vibrationEnabled ? 'bg-saffron-600' : 'bg-[var(--border-line)]'
             }`}

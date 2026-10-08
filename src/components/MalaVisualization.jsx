@@ -15,7 +15,6 @@ export function MalaVisualization({
   selectedMantra = 'श्री राम',
   showDevanagariNumbers = false,
   showDarshan = true,
-  onToggleDarshan,
 }) {
   const size = 350;
   const center = size / 2;
@@ -40,8 +39,8 @@ export function MalaVisualization({
   const baseBeadRadius = malaSize === 108 ? 3.2 : malaSize === 54 ? 4.6 : 6.0;
 
   return (
-    <div className="relative flex flex-col items-center justify-center my-1 select-none">
-      <div className="relative w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center">
+    <div className="relative flex flex-col items-center justify-center my-1 select-none max-w-full">
+      <div className="relative w-[290px] h-[290px] min-[390px]:w-[340px] min-[390px]:h-[340px] sm:w-[360px] sm:h-[360px] flex items-center justify-center">
         {/* Divine Background Glow for Active Deity */}
         <div
           className={`absolute inset-4 rounded-full bg-gradient-to-tr ${deity.bgAura} blur-2xl pointer-events-none transition-all duration-700`}
@@ -49,7 +48,7 @@ export function MalaVisualization({
 
         {/* Central Deity Darshan Image (Inside the Mala Ring) */}
         {showDarshan && (
-          <div className="absolute w-[208px] h-[208px] sm:w-[246px] h-[246px] rounded-full overflow-hidden border-2 border-[var(--accent-gold)] shadow-2xl z-0 transition-transform duration-300">
+          <div className="absolute w-[190px] h-[190px] min-[390px]:w-[225px] min-[390px]:h-[225px] sm:w-[240px] sm:h-[240px] rounded-full overflow-hidden border-2 border-[var(--accent-gold)] shadow-2xl z-0 transition-transform duration-300">
             {/* Deity Portrait */}
             <img
               src={deity.image}
@@ -231,23 +230,23 @@ export function MalaVisualization({
         </svg>
 
         {/* Floating Sacred Devotional Counter Plaque */}
-        <div className="absolute inset-0 flex flex-col items-center justify-end pb-7 sm:pb-9 text-center pointer-events-none z-20">
-          <div className="bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-amber-400/40 shadow-xl flex flex-col items-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-end pb-5 sm:pb-8 text-center pointer-events-none z-20">
+          <div className="bg-black/65 backdrop-blur-md px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl border border-amber-400/50 shadow-xl flex flex-col items-center">
             {/* Current Bead Count & Denominator */}
             <div className="flex items-baseline gap-1.5 leading-none">
               <span
-                className="text-4xl sm:text-5xl font-editorial font-bold text-amber-100 tracking-tight drop-shadow-md"
+                className="text-3xl sm:text-4xl font-editorial font-bold text-amber-100 tracking-tight drop-shadow-md"
                 aria-live="polite"
               >
                 {showDevanagariNumbers ? toDevanagariNumerals(currentBead) : currentBead}
               </span>
-              <span className="text-base sm:text-lg font-editorial text-amber-300/80">
+              <span className="text-sm sm:text-base font-editorial text-amber-300/80">
                 / {showDevanagariNumbers ? toDevanagariNumerals(malaSize) : malaSize}
               </span>
             </div>
 
             {/* Completed Mala & Total Jaap in Hindi */}
-            <div className="flex items-center gap-2 mt-1 text-[11px] font-devanagari text-amber-200/90 font-medium">
+            <div className="flex items-center gap-2 mt-1 text-[10px] sm:text-[11px] font-devanagari text-amber-200/90 font-medium">
               <span>{showDevanagariNumbers ? toDevanagariNumerals(completedMalas) : completedMalas} माला</span>
               <span className="opacity-40">•</span>
               <span>{showDevanagariNumbers ? toDevanagariNumerals(totalJaap) : totalJaap} जप</span>

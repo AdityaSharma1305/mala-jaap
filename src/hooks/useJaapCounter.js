@@ -52,7 +52,7 @@ export function useJaapCounter() {
         isCompletedModalOpen: false,
       });
 
-      // Keep undo stack within reasonable bounds (e.g. 50 actions)
+      // Keep undo stack within reasonable bounds (50 actions)
       if (undoStackRef.current.length > 50) {
         undoStackRef.current.shift();
       }
@@ -65,7 +65,6 @@ export function useJaapCounter() {
         const newLifetimeJaap = prev.lifetimeTotalJaap + 1;
         const newLifetimeMalas = prev.lifetimeMalas + 1;
 
-        const currentTodayHistory = prev.history[today] || { malas: 0, jaap: 0 };
         const updatedHistory = {
           ...prev.history,
           [today]: {
@@ -76,7 +75,6 @@ export function useJaapCounter() {
 
         // Feedback
         playJaapSound(prev.soundMode);
-        // Play gentle bell if sound is enabled
         if (prev.soundMode !== 'off') {
           setTimeout(() => playBellSound(), 180);
         }
@@ -122,13 +120,24 @@ export function useJaapCounter() {
     });
   }, []);
 
-  // Continue to Next Mala after completion
+  // Continue to Next Mala after completion (saves snapshot to undo stack)
   const startNextMala = useCallback(() => {
+    setState((prev) => {
+      undoStackRef.current.push({
+        currentBead: prev.currentBead,
+        completedMalas: prev.completedMalas,
+        totalJaap: prev.totalJaap,
+        lifetimeTotalJaap: prev.lifetimeTotalJaap,
+        lifetimeMalas: prev.lifetimeMalas,
+        history: { ...prev.history },
+        isCompletedModalOpen: true,
+      });
+      return {
+        ...prev,
+        currentBead: 0,
+      };
+    });
     setIsCompletedModalOpen(false);
-    setState((prev) => ({
-      ...prev,
-      currentBead: 0,
-    }));
   }, []);
 
   // Undo Latest Action (with boundary and completion handling)
@@ -137,7 +146,7 @@ export function useJaapCounter() {
 
     const previousSnapshot = undoStackRef.current.pop();
     if (previousSnapshot) {
-      setIsCompletedModalOpen(false);
+      setIsCompletedModalOpen(previousSnapshot.isCompletedModalOpen || false);
       setState((prev) => ({
         ...prev,
         currentBead: previousSnapshot.currentBead,
@@ -162,6 +171,7 @@ export function useJaapCounter() {
         lifetimeTotalJaap: prev.lifetimeTotalJaap,
         lifetimeMalas: prev.lifetimeMalas,
         history: { ...prev.history },
+        isCompletedModalOpen: false,
       });
       return {
         ...prev,
@@ -189,48 +199,65 @@ export function useJaapCounter() {
     setIsCompletedModalOpen(false);
   }, []);
 
-  // Settings Updaters
+  // Settings Updaters with sanitization
   const setSelectedMantra = useCallback((mantra) => {
-    setState((prev) => ({ ...prev, selectedMantra: mantra }));
+    if (!mantra) return;
+    setState((prev) => ({ ...prev, selectedMantra: String(mantra).slice(0, 60) }));
   }, []);
 
   const addCustomMantra = useCallback((mantra) => {
-    if (!mantra || !mantra.trim()) return;
-    const clean = mantra.trim();
+    if (!mantra || typeof mantra !== 'string') return;
+    // Sanitize: strip script/html tags, trim and bound length to 50 chars
+    const clean = mantra.replace(/[<>{}]/g, '').trim().slice(0, 50);
+    if (!clean) return;
+
     setState((prev) => {
       if (prev.customMantras.includes(clean)) {
         return { ...prev, selectedMantra: clean };
       }
+      // Bound max custom mantras to 20
+      const updated = [...prev.customMantras, clean].slice(-20);
       return {
         ...prev,
-        customMantras: [...prev.customMantras, clean],
+        customMantras: updated,
         selectedMantra: clean,
       };
     });
   }, []);
 
   const setMalaSize = useCallback((size) => {
+    const validSizes = [108, 54, 27];
+    const targetSize = validSizes.includes(size) ? size : 108;
     setState((prev) => ({
       ...prev,
-      malaSize: size,
-      currentBead: Math.min(prev.currentBead, size - 1),
+      malaSize: targetSize,
+      currentBead: Math.min(prev.currentBead, targetSize - 1),
     }));
   }, []);
 
   const setSoundMode = useCallback((mode) => {
-    setState((prev) => ({ ...prev, soundMode: mode }));
+    const validModes = ['off', 'bell', 'click'];
+    setState((prev) => ({
+      ...prev,
+      soundMode: validModes.includes(mode) ? mode : 'off',
+    }));
   }, []);
 
   const setVibrationEnabled = useCallback((enabled) => {
-    setState((prev) => ({ ...prev, vibrationEnabled: enabled }));
+    setState((prev) => ({ ...prev, vibrationEnabled: Boolean(enabled) }));
   }, []);
 
   const setTheme = useCallback((theme) => {
-    setState((prev) => ({ ...prev, theme }));
+    const validThemes = ['light', 'dark', 'sandalwood'];
+    setState((prev) => ({
+      ...prev,
+      theme: validThemes.includes(theme) ? theme : 'light',
+    }));
   }, []);
 
   const setDailyGoal = useCallback((goal) => {
-    setState((prev) => ({ ...prev, dailyGoal: goal }));
+    const parsed = goal ? Math.max(1, Math.min(108, parseInt(goal, 10))) : null;
+    setState((prev) => ({ ...prev, dailyGoal: isNaN(parsed) ? null : parsed }));
   }, []);
 
   const clearAllData = useCallback(() => {

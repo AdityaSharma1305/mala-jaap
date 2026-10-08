@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 export function JaapButton({ onIncrement, disabled = false }) {
   const [isPressed, setIsPressed] = useState(false);
+  const buttonRef = useRef(null);
 
-  // Support Spacebar and Enter keys
+  // Support Spacebar and Enter keys cleanly without capturing other buttons
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // If typing in input or textarea, ignore
       if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
 
-      if (e.code === 'Space' || e.code === 'Enter') {
+      // If another button is focused, let that button's default action run
+      if (e.target.tagName === 'BUTTON' && e.target !== buttonRef.current) return;
+
+      if (e.code === 'Space' || (e.code === 'Enter' && e.target === buttonRef.current)) {
         e.preventDefault();
         if (!disabled) {
           setIsPressed(true);
@@ -32,14 +37,15 @@ export function JaapButton({ onIncrement, disabled = false }) {
   };
 
   return (
-    <div className="w-full flex flex-col items-center justify-center pt-1 pb-4 px-4 select-none">
+    <div className="w-full flex flex-col items-center justify-center pt-1 pb-3 px-4 select-none">
       <button
+        ref={buttonRef}
         onClick={onIncrement}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
         disabled={disabled}
-        aria-label="जप करें (काउंट +1)"
+        aria-label="जप करें (गिनती +1)"
         className={`group relative w-36 h-36 sm:w-40 sm:h-40 rounded-full flex flex-col items-center justify-center transition-all duration-150 shadow-soft-touch border-2 border-saffron-500/30 bg-gradient-to-b from-[var(--bg-surface)] to-[var(--bg-canvas)] hover:border-saffron-500/50 focus:outline-none ${
           isPressed ? 'scale-95 shadow-inner' : 'scale-100 hover:scale-[1.02]'
         }`}
@@ -70,7 +76,7 @@ export function JaapButton({ onIncrement, disabled = false }) {
       </button>
 
       {/* Subtle Hint */}
-      <div className="flex items-center gap-2 mt-2.5 opacity-60">
+      <div className="flex items-center gap-2 mt-2 opacity-60">
         <span className="text-[11px] font-devanagari text-[var(--text-muted)]">
           स्क्रीन स्पर्श या स्पेसबार दबाएं
         </span>

@@ -17,6 +17,13 @@ function getAudioContext() {
   return audioCtx;
 }
 
+export function unlockAudio() {
+  const ctx = getAudioContext();
+  if (ctx && ctx.state === 'suspended') {
+    ctx.resume().catch(() => {});
+  }
+}
+
 /**
  * Plays a rich, resonant temple bell chime (मंदिर की कांस्य घंटी)
  * Crafted using authentic multi-harmonic bronze frequencies:

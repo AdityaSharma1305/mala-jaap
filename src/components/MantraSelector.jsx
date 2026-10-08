@@ -73,9 +73,14 @@ export function MantraSelector({
 
       {/* Mantra Selection Sheet / Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-[4px] transition-opacity">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="mantra-selector-title"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-[4px] transition-opacity"
+        >
           {/* Backdrop Click */}
-          <div className="fixed inset-0" onClick={() => setIsOpen(false)} />
+          <div className="fixed inset-0" onClick={() => setIsOpen(false)} aria-hidden="true" />
 
           <div className="relative w-full max-w-md bg-[var(--bg-canvas)] border-t sm:border-2 border-[var(--accent-gold)]/40 rounded-t-3xl sm:rounded-3xl p-5 sm:p-6 shadow-2xl z-10 max-h-[88vh] overflow-y-auto">
             {/* Sheet Handle for Mobile */}
@@ -83,7 +88,7 @@ export function MantraSelector({
 
             <div className="flex items-center justify-between pb-3 border-b border-[var(--border-line)]">
               <div>
-                <h3 className="text-lg font-devanagari font-bold text-[var(--text-main)] flex items-center gap-2">
+                <h3 id="mantra-selector-title" className="text-lg font-devanagari font-bold text-[var(--text-main)] flex items-center gap-2">
                   <span>🕉</span>
                   <span>इष्ट देव एवं मंत्र चयन</span>
                 </h3>
@@ -93,6 +98,7 @@ export function MantraSelector({
               </div>
               <button
                 onClick={() => setIsOpen(false)}
+                aria-label="बंद करें"
                 className="p-1.5 rounded-full text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface)] transition-colors"
               >
                 <X className="w-5 h-5" />
@@ -167,6 +173,7 @@ export function MantraSelector({
                     value={customInput}
                     onChange={(e) => setCustomInput(e.target.value)}
                     placeholder="अपना मंत्र यहाँ लिखें..."
+                    maxLength={50}
                     autoFocus
                     className="w-full px-4 py-2.5 rounded-xl border border-[var(--border-line)] bg-[var(--bg-surface)] text-[var(--text-main)] font-devanagari placeholder:text-[var(--text-muted)]/60 focus:outline-none focus:ring-2 focus:ring-amber-500/50"
                   />

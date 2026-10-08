@@ -22,13 +22,18 @@ export function CompletionModal({
   const deity = getDeityInfo(selectedMantra);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-fade-in">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="completion-title"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4 animate-fade-in"
+    >
       <div className="relative w-full max-w-sm bg-[var(--bg-canvas)] border-2 border-[var(--accent-gold)] rounded-3xl p-6 text-center shadow-2xl space-y-4 overflow-hidden">
         {/* Divine Golden Rays Aura */}
         <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-48 h-48 rounded-full bg-amber-500/20 blur-2xl pointer-events-none" />
 
         {/* Sacred Deity Darshan Frame */}
-        <div className="relative w-28 h-28 mx-auto rounded-full overflow-hidden border-3 border-[var(--accent-gold)] shadow-xl">
+        <div className="relative w-28 h-28 mx-auto rounded-full overflow-hidden border-2 border-[var(--accent-gold)] shadow-xl">
           <img
             src={deity.image}
             alt={deity.name}
@@ -42,7 +47,7 @@ export function CompletionModal({
           <div className="text-xs font-devanagari text-saffron-600 dark:text-saffron-400 font-bold tracking-widest uppercase">
             🙏 पूर्णता का पुण्य पर्व
           </div>
-          <h2 className="text-2xl font-devanagari font-bold text-[var(--text-main)]">
+          <h2 id="completion-title" className="text-2xl font-devanagari font-bold text-[var(--text-main)]">
             एक माला पूर्ण हुई
           </h2>
           <p className="text-base font-devanagari text-saffron-800 dark:text-saffron-300 font-semibold">
