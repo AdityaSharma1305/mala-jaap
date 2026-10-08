@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { getDeityInfo } from './DeityDarshan';
 
 // Devanagari numerals converter
 export function toDevanagariNumerals(num) {
@@ -11,12 +12,16 @@ export function MalaVisualization({
   malaSize = 108,
   completedMalas = 0,
   totalJaap = 0,
+  selectedMantra = 'श्री राम',
   showDevanagariNumbers = false,
-  mantraInsignia = null
+  showDarshan = true,
+  onToggleDarshan,
 }) {
-  const size = 340;
+  const size = 350;
   const center = size / 2;
-  const radius = 132;
+  const radius = 138;
+
+  const deity = getDeityInfo(selectedMantra);
 
   // Generate bead coordinates mathematically
   const beads = useMemo(() => {
@@ -26,68 +31,83 @@ export function MalaVisualization({
       const angle = (i / malaSize) * 2 * Math.PI - Math.PI / 2;
       const x = center + radius * Math.cos(angle);
       const y = center + radius * Math.sin(angle);
-      const isMilestone = (i + 1) % 27 === 0; // Quarter milestones in traditional mala
+      const isMilestone = (i + 1) % 27 === 0;
       list.push({ index: i, x, y, isMilestone });
     }
     return list;
   }, [malaSize, center, radius]);
 
-  // Radius sizing for beads
-  const baseBeadRadius = malaSize === 108 ? 3.0 : malaSize === 54 ? 4.2 : 5.8;
+  const baseBeadRadius = malaSize === 108 ? 3.2 : malaSize === 54 ? 4.6 : 6.0;
 
   return (
     <div className="relative flex flex-col items-center justify-center my-1 select-none">
-      <div className="relative w-72 h-72 sm:w-88 sm:h-88 flex items-center justify-center">
-        {/* Sacred SVG Mala */}
+      <div className="relative w-80 h-80 sm:w-96 sm:h-96 flex items-center justify-center">
+        {/* Divine Background Glow for Active Deity */}
+        <div
+          className={`absolute inset-4 rounded-full bg-gradient-to-tr ${deity.bgAura} blur-2xl pointer-events-none transition-all duration-700`}
+        />
+
+        {/* Central Deity Darshan Image (Inside the Mala Ring) */}
+        {showDarshan && (
+          <div className="absolute w-[208px] h-[208px] sm:w-[246px] h-[246px] rounded-full overflow-hidden border-2 border-[var(--accent-gold)] shadow-2xl z-0 transition-transform duration-300">
+            {/* Deity Portrait */}
+            <img
+              src={deity.image}
+              alt={deity.name}
+              className="w-full h-full object-cover object-center filter brightness-[0.98] contrast-[1.03] transition-opacity duration-500"
+            />
+            
+            {/* Subtle Gradient Vignette to blend image and numbers */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30 pointer-events-none" />
+
+            {/* Sacred Gold Frame Rim Overlay */}
+            <div className="absolute inset-0 rounded-full border-2 border-[var(--accent-gold)]/60 pointer-events-none" />
+          </div>
+        )}
+
+        {/* Sacred SVG Mala Ring */}
         <svg
           viewBox={`0 0 ${size} ${size}`}
-          className="w-full h-full overflow-visible transition-all duration-300"
+          className="w-full h-full overflow-visible z-10 pointer-events-none"
           aria-hidden="true"
         >
           <defs>
-            {/* Shading Gradients for Realistic Sacred Rudraksha Beads */}
+            {/* Realistic Rudraksha Shading Gradients */}
             <radialGradient id="pendingBeadGrad" cx="35%" cy="35%" r="65%">
-              <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.6"/>
-              <stop offset="40%" stop-color="var(--border-line)"/>
-              <stop offset="100%" stop-color="var(--bg-surface)"/>
+              <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.7"/>
+              <stop offset="45%" stopColor="var(--border-line)"/>
+              <stop offset="100%" stopColor="var(--bg-surface)"/>
             </radialGradient>
 
             <radialGradient id="completedBeadGrad" cx="35%" cy="30%" r="70%">
-              <stop offset="0%" stop-color="#FFC875"/>
-              <stop offset="30%" stop-color="#D97724"/>
-              <stop offset="85%" stop-color="#A54B0E"/>
-              <stop offset="100%" stop-color="#6E2D05"/>
+              <stop offset="0%" stopColor="#FFE082"/>
+              <stop offset="30%" stopColor="#E67E22"/>
+              <stop offset="85%" stopColor="#B3541E"/>
+              <stop offset="100%" stopColor="#6E2D05"/>
             </radialGradient>
 
             <radialGradient id="activeBeadGrad" cx="30%" cy="30%" r="75%">
-              <stop offset="0%" stop-color="#FFF9E6"/>
-              <stop offset="25%" stop-color="#FFB338"/>
-              <stop offset="70%" stop-color="#C85A17"/>
-              <stop offset="100%" stop-color="#802E00"/>
+              <stop offset="0%" stopColor="#FFFFFF"/>
+              <stop offset="20%" stopColor="#FFF176"/>
+              <stop offset="60%" stopColor="#F59E0B"/>
+              <stop offset="100%" stopColor="#B45309"/>
             </radialGradient>
 
             <radialGradient id="meruBeadGrad" cx="35%" cy="30%" r="70%">
-              <stop offset="0%" stop-color="#FFEAA7"/>
-              <stop offset="35%" stop-color="#DE9644"/>
-              <stop offset="80%" stop-color="#9C3E07"/>
-              <stop offset="100%" stop-color="#5E2002"/>
-            </radialGradient>
-
-            {/* Sacred Ambient Ring Glow */}
-            <radialGradient id="sanctuaryHalo" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="#C85A17" stop-opacity="0.08"/>
-              <stop offset="70%" stop-color="#C5A059" stop-opacity="0.03"/>
-              <stop offset="100%" stop-color="transparent" stop-opacity="0"/>
+              <stop offset="0%" stopColor="#FFF59D"/>
+              <stop offset="35%" stopColor="#F59E0B"/>
+              <stop offset="80%" stopColor="#B45309"/>
+              <stop offset="100%" stopColor="#78350F"/>
             </radialGradient>
 
             {/* Drop Shadow for Beads */}
             <filter id="softBeadShadow" x="-30%" y="-30%" width="160%" height="160%">
-              <feDropShadow dx="0" dy="1" stdDeviation="0.8" floodOpacity="0.25"/>
+              <feDropShadow dx="0" dy="1.2" stdDeviation="0.9" floodOpacity="0.35"/>
             </filter>
 
             {/* Glowing filter for Active Bead */}
-            <filter id="activeGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="2.5" result="glow"/>
+            <filter id="activeGlow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="3.0" result="glow"/>
               <feMerge>
                 <feMergeNode in="glow"/>
                 <feMergeNode in="SourceGraphic"/>
@@ -95,72 +115,64 @@ export function MalaVisualization({
             </filter>
           </defs>
 
-          {/* Meditative Ambient Halo in Center */}
-          <circle
-            cx={center}
-            cy={center}
-            r={radius - 8}
-            fill="url(#sanctuaryHalo)"
-          />
-
-          {/* Sacred Thread Passing Through Beads (माला का पवित्र सूत्र) */}
+          {/* Golden Thread Passing Through Beads */}
           <circle
             cx={center}
             cy={center}
             r={radius}
             fill="none"
             stroke="var(--accent-gold)"
-            strokeWidth="0.9"
-            strokeOpacity="0.35"
+            strokeWidth="1.2"
+            strokeOpacity="0.5"
           />
 
           {/* Sumeru / Meru Master Guru Bead at 12 o'clock */}
-          <g transform={`translate(${center}, ${center - radius - 12})`}>
-            {/* Sacred Saffron Silk Tassel Lines */}
+          <g transform={`translate(${center}, ${center - radius - 14})`}>
+            {/* Sacred Silk Tassel Cords */}
             <path
-              d="M-4 -12 L0 -4 L4 -12"
-              stroke="var(--accent-saffron)"
-              strokeWidth="1.2"
+              d="M-5 -14 L0 -5 L5 -14"
+              stroke="#D97724"
+              strokeWidth="1.6"
               fill="none"
               strokeLinecap="round"
             />
             <line
               x1="0"
-              y1="-14"
+              y1="-16"
               x2="0"
-              y2="-3"
-              stroke="var(--accent-saffron)"
-              strokeWidth="1.8"
+              y2="-4"
+              stroke="#D97724"
+              strokeWidth="2.2"
               strokeLinecap="round"
             />
             
-            {/* Meru Bead Golden Cap Top */}
+            {/* Golden Cap Top */}
             <ellipse
               cx="0"
               cy="2"
-              rx="4.2"
-              ry="1.8"
-              fill="var(--accent-gold)"
+              rx="4.8"
+              ry="2.0"
+              fill="#D4AF37"
             />
 
             {/* Meru Guru Bead Main Sphere */}
             <circle
               cx="0"
-              cy="8"
-              r={baseBeadRadius + 3.2}
+              cy="9"
+              r={baseBeadRadius + 3.6}
               fill="url(#meruBeadGrad)"
-              stroke="var(--accent-gold)"
-              strokeWidth="1.2"
+              stroke="#D4AF37"
+              strokeWidth="1.4"
               filter="url(#softBeadShadow)"
             />
 
-            {/* Meru Golden Cap Bottom */}
+            {/* Golden Cap Bottom */}
             <ellipse
               cx="0"
-              cy="13.5"
-              rx="3.5"
-              ry="1.4"
-              fill="var(--accent-gold)"
+              cy="15"
+              rx="4.0"
+              ry="1.6"
+              fill="#D4AF37"
             />
           </g>
 
@@ -178,12 +190,12 @@ export function MalaVisualization({
 
             if (isCompleted) {
               fill = 'url(#completedBeadGrad)';
-              r = baseBeadRadius + 0.4;
+              r = baseBeadRadius + 0.5;
             } else if (isCurrent) {
               fill = 'url(#activeBeadGrad)';
-              stroke = 'var(--accent-gold)';
+              stroke = '#FFFFFF';
               strokeWidth = 1.4;
-              r = baseBeadRadius + 2.0;
+              r = baseBeadRadius + 2.5;
               filter = 'url(#activeGlow)';
             }
 
@@ -194,11 +206,11 @@ export function MalaVisualization({
                   <circle
                     cx={bead.x}
                     cy={bead.y}
-                    r={r + 1.2}
+                    r={r + 1.4}
                     fill="none"
-                    stroke="var(--accent-gold)"
-                    strokeWidth="0.8"
-                    opacity="0.6"
+                    stroke="#D4AF37"
+                    strokeWidth="1.0"
+                    opacity="0.8"
                   />
                 )}
 
@@ -218,42 +230,28 @@ export function MalaVisualization({
           })}
         </svg>
 
-        {/* Central Sacred Counter Sanctum */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-          {/* Subtle Devotional Watermark in center */}
-          <div className="text-xs font-devanagari text-saffron-600/30 dark:text-saffron-400/20 mb-1 select-none font-semibold tracking-widest">
-            {showDevanagariNumbers ? toDevanagariNumerals(currentBead) : 'ॐ'}
-          </div>
+        {/* Floating Sacred Devotional Counter Plaque */}
+        <div className="absolute inset-0 flex flex-col items-center justify-end pb-7 sm:pb-9 text-center pointer-events-none z-20">
+          <div className="bg-black/60 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-amber-400/40 shadow-xl flex flex-col items-center">
+            {/* Current Bead Count & Denominator */}
+            <div className="flex items-baseline gap-1.5 leading-none">
+              <span
+                className="text-4xl sm:text-5xl font-editorial font-bold text-amber-100 tracking-tight drop-shadow-md"
+                aria-live="polite"
+              >
+                {showDevanagariNumbers ? toDevanagariNumerals(currentBead) : currentBead}
+              </span>
+              <span className="text-base sm:text-lg font-editorial text-amber-300/80">
+                / {showDevanagariNumbers ? toDevanagariNumerals(malaSize) : malaSize}
+              </span>
+            </div>
 
-          {/* Current Bead Count */}
-          <span
-            className="text-6xl sm:text-7xl font-editorial font-medium tracking-tight text-[var(--text-main)] transition-all duration-150 drop-shadow-sm"
-            aria-live="polite"
-          >
-            {showDevanagariNumbers ? toDevanagariNumerals(currentBead) : currentBead}
-          </span>
-
-          {/* Sacred Fine Gold Hairline Divider */}
-          <div className="w-16 sm:w-20 my-1 sm:my-1.5 flex items-center justify-center gap-1 opacity-70">
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[var(--accent-gold)] to-transparent" />
-            <div className="w-1 h-1 rounded-full bg-[var(--accent-gold)]" />
-            <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[var(--accent-gold)] to-transparent" />
-          </div>
-
-          {/* Total Denominator */}
-          <span className="text-sm sm:text-base font-editorial text-[var(--text-muted)] tracking-wider">
-            {showDevanagariNumbers ? toDevanagariNumerals(malaSize) : malaSize}
-          </span>
-
-          {/* Completed Mala & Jaap Pill */}
-          <div className="mt-2.5 px-3 py-1 rounded-full bg-[var(--bg-surface)]/80 border border-[var(--border-line)] text-xs font-devanagari text-[var(--text-muted)] flex items-center gap-1.5 shadow-sm">
-            <span className="font-semibold text-[var(--text-main)]">
-              {showDevanagariNumbers ? toDevanagariNumerals(completedMalas) : completedMalas} माला
-            </span>
-            <span className="text-[10px] opacity-40">•</span>
-            <span className="text-saffron-700 dark:text-saffron-400 font-medium">
-              {showDevanagariNumbers ? toDevanagariNumerals(totalJaap) : totalJaap} जप
-            </span>
+            {/* Completed Mala & Total Jaap in Hindi */}
+            <div className="flex items-center gap-2 mt-1 text-[11px] font-devanagari text-amber-200/90 font-medium">
+              <span>{showDevanagariNumbers ? toDevanagariNumerals(completedMalas) : completedMalas} माला</span>
+              <span className="opacity-40">•</span>
+              <span>{showDevanagariNumbers ? toDevanagariNumerals(totalJaap) : totalJaap} जप</span>
+            </div>
           </div>
         </div>
       </div>

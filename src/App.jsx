@@ -37,6 +37,7 @@ export default function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isProgressOpen, setIsProgressOpen] = useState(false);
   const [isDhyanMode, setIsDhyanMode] = useState(false);
+  const [showDarshan, setShowDarshan] = useState(true);
 
   // Apply theme to document element
   useEffect(() => {
@@ -65,7 +66,7 @@ export default function App() {
 
   return (
     <div className="relative min-h-[100dvh] w-full flex flex-col justify-between paper-texture overflow-x-hidden transition-colors duration-500">
-      {/* Sacred Temple Ambient Glow */}
+      {/* Sacred Temple Ghee Lamps & Ambient Jyoti Glow */}
       <SacredDiyaGlow enabled={true} />
 
       {/* 1. Header (Hidden during Dhyan Mode for complete focus) */}
@@ -83,8 +84,8 @@ export default function App() {
       ) : (
         /* Minimal Dhyan mode exit button */
         <div className="w-full max-w-md mx-auto px-4 pt-3 flex justify-between items-center z-20">
-          <span className="text-xs font-devanagari text-saffron-600 dark:text-saffron-400 font-medium">
-            ध्यान मुद्रा (एकाग्रता)
+          <span className="text-xs font-devanagari text-saffron-600 dark:text-saffron-400 font-bold">
+            🕉 ध्यान मुद्रा (एकाग्र चित्त)
           </span>
           <button
             onClick={() => setIsDhyanMode(false)}
@@ -108,13 +109,16 @@ export default function App() {
           />
         </div>
 
-        {/* Circular Mala Visualization */}
+        {/* Circular Mala Visualization with Deity Darshan */}
         <div className="w-full flex-1 flex flex-col items-center justify-center my-auto">
           <MalaVisualization
             currentBead={state.currentBead}
             malaSize={state.malaSize}
             completedMalas={state.completedMalas}
             totalJaap={state.totalJaap}
+            selectedMantra={state.selectedMantra}
+            showDarshan={showDarshan}
+            onToggleDarshan={() => setShowDarshan(!showDarshan)}
           />
 
           {/* Quiet Undo & Reset Controls */}
@@ -141,7 +145,7 @@ export default function App() {
             <button
               onClick={() => setIsProgressOpen(true)}
               aria-label="आज का दैनिक विवरण देखें"
-              className="group inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-devanagari text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface)] transition-all tap-bounce border border-[var(--border-line)]/60 shadow-sm"
+              className="group inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-devanagari text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface)] transition-all tap-bounce border border-[var(--border-line)]/80 shadow-sm"
             >
               <span>आज: {state.completedMalas} माला</span>
               <span className="opacity-40">•</span>
