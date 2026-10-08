@@ -1,5 +1,6 @@
-import React from 'react';
-import { RotateCcw } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { RotateCcw, CheckCircle2 } from 'lucide-react';
+import { playSingingBowlChime } from '../utils/sound';
 
 export function CompletionModal({
   isOpen,
@@ -9,43 +10,57 @@ export function CompletionModal({
   onNextMala,
   onUndo
 }) {
+  useEffect(() => {
+    if (isOpen) {
+      playSingingBowlChime();
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in">
-      <div className="relative w-full max-w-sm bg-[var(--bg-canvas)] border border-[var(--border-line)] rounded-3xl p-8 text-center shadow-2xl space-y-6">
-        {/* Sacred Blessing Icon */}
-        <div className="w-16 h-16 mx-auto rounded-full bg-saffron-50 dark:bg-saffron-950/50 flex items-center justify-center border border-saffron-200 dark:border-saffron-900/50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
+      <div className="relative w-full max-w-sm bg-[var(--bg-canvas)] border-2 border-[var(--accent-gold)]/40 rounded-3xl p-7 text-center shadow-2xl space-y-5">
+        {/* Sacred Golden Diya Glow behind modal */}
+        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full bg-saffron-500/10 blur-xl pointer-events-none" />
+
+        {/* Sacred Pranam Icon */}
+        <div className="w-16 h-16 mx-auto rounded-full bg-saffron-50 dark:bg-saffron-950/60 flex items-center justify-center border-2 border-saffron-300 dark:border-saffron-700/60 shadow-inner">
           <span className="text-3xl select-none" role="img" aria-label="हाथ जोड़े">
             🙏
           </span>
         </div>
 
-        {/* Devotional Completion Message */}
-        <div className="space-y-2">
-          <h2 className="text-2xl font-devanagari font-semibold text-[var(--text-main)]">
+        {/* Devotional Completion Header */}
+        <div className="space-y-1.5">
+          <h2 className="text-2xl font-devanagari font-bold text-[var(--text-main)]">
             एक माला पूर्ण हुई
           </h2>
-          <p className="text-base font-devanagari text-saffron-700 dark:text-saffron-400 font-medium">
+          <p className="text-lg font-devanagari text-saffron-700 dark:text-saffron-400 font-semibold">
             {selectedMantra}
           </p>
-          <p className="text-sm font-devanagari text-[var(--text-muted)]">
-            {malaSize} नाम जप संपन्न
+          <p className="text-xs font-devanagari text-[var(--text-muted)]">
+            {malaSize} नाम जप श्रद्धापूर्वक संपन्न
           </p>
         </div>
 
-        {/* Subtle Today Progress */}
-        <div className="py-2.5 px-4 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-line)] text-xs font-devanagari text-[var(--text-muted)]">
-          आज कुल <span className="font-semibold text-[var(--text-main)]">{completedMalas}</span> माला पूर्ण
+        {/* Sacred Traditional Shloka */}
+        <div className="py-3 px-4 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-line)] text-center space-y-1">
+          <p className="text-xs font-devanagari text-saffron-800 dark:text-saffron-300 font-medium italic leading-relaxed">
+            “हरेर्नाम हरेर्नाम हरेर्नामैव केवलम्।”
+          </p>
+          <span className="text-[10px] font-devanagari text-[var(--text-muted)] block">
+            आज कुल साधना: <strong className="text-[var(--text-main)]">{completedMalas} माला</strong>
+          </span>
         </div>
 
         {/* Action Button: अगली माला */}
-        <div className="space-y-3 pt-2">
+        <div className="space-y-3 pt-1">
           <button
             onClick={onNextMala}
-            className="w-full py-3.5 px-6 rounded-2xl bg-saffron-600 hover:bg-saffron-700 active:scale-98 text-white font-devanagari text-base font-medium transition-all shadow-md tap-bounce"
+            className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-saffron-600 via-saffron-700 to-saffron-600 hover:from-saffron-700 hover:to-saffron-800 active:scale-98 text-white font-devanagari text-base font-semibold transition-all shadow-md tap-bounce flex items-center justify-center gap-2"
           >
-            अगली माला
+            <span>अगली माला आरंभ करें</span>
           </button>
 
           {/* Accidental tap undo option */}

@@ -9,7 +9,8 @@ import { CompletionModal } from './components/CompletionModal';
 import { DailyProgressSheet } from './components/DailyProgressSheet';
 import { HistorySheet } from './components/HistorySheet';
 import { SettingsSheet } from './components/SettingsSheet';
-import { ChevronUp } from 'lucide-react';
+import { SacredDiyaGlow } from './components/SacredDiyaGlow';
+import { ChevronUp, EyeOff } from 'lucide-react';
 
 export default function App() {
   const {
@@ -35,6 +36,7 @@ export default function App() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isProgressOpen, setIsProgressOpen] = useState(false);
+  const [isDhyanMode, setIsDhyanMode] = useState(false);
 
   // Apply theme to document element
   useEffect(() => {
@@ -54,18 +56,48 @@ export default function App() {
     setTheme(sequence[nextIndex]);
   };
 
+  // Quick sound cycling: off -> bell -> click -> off
+  const handleCycleSound = () => {
+    const soundSeq = ['off', 'bell', 'click'];
+    const nextIdx = (soundSeq.indexOf(state.soundMode) + 1) % soundSeq.length;
+    setSoundMode(soundSeq[nextIdx]);
+  };
+
   return (
-    <div className="relative min-h-[100dvh] w-full flex flex-col justify-between paper-texture overflow-x-hidden">
-      {/* 1. Header */}
-      <Header
-        theme={state.theme}
-        onCycleTheme={handleCycleTheme}
-        onOpenHistory={() => setIsHistoryOpen(true)}
-        onOpenSettings={() => setIsSettingsOpen(true)}
-      />
+    <div className="relative min-h-[100dvh] w-full flex flex-col justify-between paper-texture overflow-x-hidden transition-colors duration-500">
+      {/* Sacred Temple Ambient Glow */}
+      <SacredDiyaGlow enabled={true} />
+
+      {/* 1. Header (Hidden during Dhyan Mode for complete focus) */}
+      {!isDhyanMode ? (
+        <Header
+          theme={state.theme}
+          onCycleTheme={handleCycleTheme}
+          soundMode={state.soundMode}
+          onCycleSound={handleCycleSound}
+          isDhyanMode={isDhyanMode}
+          onToggleDhyanMode={() => setIsDhyanMode(true)}
+          onOpenHistory={() => setIsHistoryOpen(true)}
+          onOpenSettings={() => setIsSettingsOpen(true)}
+        />
+      ) : (
+        /* Minimal Dhyan mode exit button */
+        <div className="w-full max-w-md mx-auto px-4 pt-3 flex justify-between items-center z-20">
+          <span className="text-xs font-devanagari text-saffron-600 dark:text-saffron-400 font-medium">
+            ध्यान मुद्रा (एकाग्रता)
+          </span>
+          <button
+            onClick={() => setIsDhyanMode(false)}
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-surface)] text-[var(--text-muted)] hover:text-[var(--text-main)] text-xs font-devanagari border border-[var(--border-line)] tap-bounce"
+          >
+            <EyeOff className="w-3.5 h-3.5" />
+            <span>समाप्त करें</span>
+          </button>
+        </div>
+      )}
 
       {/* 2. Devotional Sanctuary Center Area */}
-      <main className="flex-1 w-full max-w-md mx-auto px-4 flex flex-col items-center justify-between pb-2 z-10">
+      <main className="flex-1 w-full max-w-md mx-auto px-4 flex flex-col items-center justify-between pb-3 z-10">
         {/* Mantra Area */}
         <div className="w-full">
           <MantraSelector
@@ -86,12 +118,14 @@ export default function App() {
           />
 
           {/* Quiet Undo & Reset Controls */}
-          <UndoResetControls
-            onUndo={undo}
-            canUndo={canUndo}
-            onResetMala={resetCurrentMala}
-            currentBead={state.currentBead}
-          />
+          {!isDhyanMode && (
+            <UndoResetControls
+              onUndo={undo}
+              canUndo={canUndo}
+              onResetMala={resetCurrentMala}
+              currentBead={state.currentBead}
+            />
+          )}
         </div>
 
         {/* Bottom Interaction Area (Ergonomic Thumb Reach) */}
@@ -102,17 +136,19 @@ export default function App() {
             disabled={isCompletedModalOpen}
           />
 
-          {/* Subtle Daily Progress Indicator Bar */}
-          <button
-            onClick={() => setIsProgressOpen(true)}
-            aria-label="आज का दैनिक विवरण देखें"
-            className="group inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-devanagari text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface)] transition-all tap-bounce mb-1"
-          >
-            <span>आज: {state.completedMalas} माला</span>
-            <span className="opacity-50">•</span>
-            <span>{state.totalJaap} जप</span>
-            <ChevronUp className="w-3.5 h-3.5 opacity-60 group-hover:-translate-y-0.5 transition-transform" />
-          </button>
+          {/* Subtle Daily Progress Indicator Bar (Hidden during Dhyan mode) */}
+          {!isDhyanMode && (
+            <button
+              onClick={() => setIsProgressOpen(true)}
+              aria-label="आज का दैनिक विवरण देखें"
+              className="group inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-devanagari text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface)] transition-all tap-bounce border border-[var(--border-line)]/60 shadow-sm"
+            >
+              <span>आज: {state.completedMalas} माला</span>
+              <span className="opacity-40">•</span>
+              <span>{state.totalJaap} जप</span>
+              <ChevronUp className="w-3.5 h-3.5 opacity-60 group-hover:-translate-y-0.5 transition-transform" />
+            </button>
+          )}
         </div>
       </main>
 
