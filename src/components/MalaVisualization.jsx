@@ -10,6 +10,7 @@ export function MalaVisualization({
   selectedMantra = 'श्री राम',
   showDevanagariNumbers = false,
   showDarshan = true,
+  isCelebrating = false,
 }) {
   const size = 350;
   const center = size / 2;
@@ -36,6 +37,21 @@ export function MalaVisualization({
   return (
     <div className="relative flex flex-col items-center justify-center my-1 select-none max-w-full">
       <div className="relative w-[290px] h-[290px] min-[390px]:w-[340px] min-[390px]:h-[340px] sm:w-[360px] sm:h-[360px] flex items-center justify-center">
+        {/* Celebrating Sacred Aura Expansion Wave on Mala Completion */}
+        {isCelebrating && (
+          <>
+            <div className="absolute inset-0 rounded-full border-4 border-amber-300 animate-ping opacity-60 pointer-events-none z-20" />
+            <div className="absolute -inset-6 rounded-full bg-amber-400/25 blur-2xl animate-pulse pointer-events-none z-10" />
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 z-30 pointer-events-none animate-bounce">
+              <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 text-stone-950 font-bold text-xs shadow-xl border border-yellow-100 whitespace-nowrap">
+                <span>✨</span>
+                <span>माला पूर्ण • {malaSize} जप ॐ</span>
+                <span>✨</span>
+              </div>
+            </div>
+          </>
+        )}
+
         {/* Divine Background Glow for Active Deity */}
         <div
           className={`absolute inset-4 rounded-full bg-gradient-to-tr ${deity.bgAura} blur-2xl pointer-events-none transition-all duration-700`}

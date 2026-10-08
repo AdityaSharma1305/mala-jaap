@@ -5,7 +5,6 @@ import { MantraSelector } from './components/MantraSelector';
 import { MalaVisualization } from './components/MalaVisualization';
 import { JaapButton } from './components/JaapButton';
 import { UndoResetControls } from './components/UndoResetControls';
-import { CompletionModal } from './components/CompletionModal';
 import { DailyProgressSheet } from './components/DailyProgressSheet';
 import { HistorySheet } from './components/HistorySheet';
 import { SettingsSheet } from './components/SettingsSheet';
@@ -16,9 +15,9 @@ import { ChevronUp, EyeOff } from 'lucide-react';
 export default function App() {
   const {
     state,
-    isCompletedModalOpen,
+    isCelebrating,
+    celebrationInfo,
     incrementJaap,
-    startNextMala,
     undo,
     canUndo,
     resetCurrentMala,
@@ -125,6 +124,7 @@ export default function App() {
             selectedMantra={state.selectedMantra}
             showDarshan={showDarshan}
             onToggleDarshan={() => setShowDarshan(!showDarshan)}
+            isCelebrating={isCelebrating}
           />
 
           {/* Quiet Undo & Reset Controls */}
@@ -140,10 +140,10 @@ export default function App() {
 
         {/* Bottom Interaction Area (Ergonomic Thumb Reach) */}
         <div className="w-full flex flex-col items-center">
-          {/* Main 'जप' Button */}
+          {/* Main 'जप' Button - Grand, Effortless & Always Active */}
           <JaapButton
             onIncrement={incrementJaap}
-            disabled={isCompletedModalOpen}
+            disabled={false}
           />
 
           {/* Subtle Daily Progress Indicator Bar (Hidden during Dhyan mode) */}
@@ -165,15 +165,23 @@ export default function App() {
       {/* 3. Devotional Footer with Sanskrit Epigram, Aditya Sharma credit & PWA info */}
       {!isDhyanMode && <Footer />}
 
-      {/* 4. Mala Completion Experience */}
-      <CompletionModal
-        isOpen={isCompletedModalOpen}
-        malaSize={state.malaSize}
-        completedMalas={state.completedMalas}
-        selectedMantra={state.selectedMantra}
-        onNextMala={startNextMala}
-        onUndo={undo}
-      />
+      {/* 4. Non-Blocking Mala Completion Devotional Toast (No modal popup, zero disruption) */}
+      {isCelebrating && celebrationInfo && (
+        <div className="fixed top-14 left-1/2 -translate-x-1/2 z-40 pointer-events-none transition-all duration-500 animate-bounce">
+          <div className="px-5 py-2.5 rounded-2xl bg-[#1e150f]/95 border-2 border-amber-400/80 shadow-[0_4px_30px_rgba(245,158,11,0.5)] flex items-center gap-2.5 backdrop-blur-md">
+            <span className="text-amber-400 text-lg">✨</span>
+            <div className="flex flex-col text-center">
+              <span className="text-xs font-devanagari font-bold text-amber-100">
+                {celebrationInfo.malaCount} माला पूर्ण हुई! 🕉
+              </span>
+              <span className="text-[10px] font-devanagari text-amber-300/80">
+                {celebrationInfo.beadCount} नाम जप श्रद्धापूर्वक सम्पन्न
+              </span>
+            </div>
+            <span className="text-amber-400 text-lg">✨</span>
+          </div>
+        </div>
+      )}
 
       {/* 5. Drawers & Sheets */}
       <DailyProgressSheet

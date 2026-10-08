@@ -37,8 +37,10 @@ export function JaapButton({ onIncrement, disabled = false }) {
   };
 
   return (
-    <div className="w-full flex flex-col items-center justify-center pt-1 pb-3 px-4 select-none">
+    <div className="w-full flex flex-col items-center justify-center pt-2 pb-2 px-4 select-none">
       <button
+        id="main-jaap-button"
+        data-testid="main-jaap-button"
         ref={buttonRef}
         onClick={onIncrement}
         onPointerDown={handlePointerDown}
@@ -46,38 +48,43 @@ export function JaapButton({ onIncrement, disabled = false }) {
         onPointerLeave={handlePointerUp}
         disabled={disabled}
         aria-label="जप करें (गिनती +1)"
-        className={`group relative w-36 h-36 sm:w-40 sm:h-40 rounded-full flex flex-col items-center justify-center transition-all duration-150 shadow-soft-touch border-2 border-saffron-500/30 bg-gradient-to-b from-[var(--bg-surface)] to-[var(--bg-canvas)] hover:border-saffron-500/50 focus:outline-none ${
-          isPressed ? 'scale-95 shadow-inner' : 'scale-100 hover:scale-[1.02]'
+        className={`group relative w-48 h-48 min-[380px]:w-52 min-[380px]:h-52 sm:w-56 sm:h-56 rounded-full flex flex-col items-center justify-center transition-all duration-150 border-2 border-amber-500/40 bg-gradient-to-b from-[#2a1c12] via-[#1c120c] to-[#120a06] hover:border-amber-400/70 focus:outline-none shadow-[0_12px_40px_rgba(0,0,0,0.8),0_0_25px_rgba(245,158,11,0.18)] ${
+          isPressed
+            ? 'scale-[0.96] ring-4 ring-amber-500/40 brightness-110 shadow-inner'
+            : 'scale-100 hover:scale-[1.02]'
         }`}
       >
-        {/* Outer Sacred Gold Aura Ring */}
-        <div className="absolute -inset-1 rounded-full border border-[var(--accent-gold)] opacity-30 pointer-events-none" />
+        {/* Soft Ambient Radiance Aura behind the button */}
+        <div className="absolute -inset-3 rounded-full bg-amber-500/10 blur-xl group-hover:bg-amber-500/20 transition-all pointer-events-none" />
 
-        {/* Inner Fine Concentric Ring */}
-        <div className="absolute inset-2 rounded-full border border-[var(--border-line)] pointer-events-none opacity-80" />
+        {/* Outer Sacred Gold Filigree Ring */}
+        <div className="absolute -inset-1.5 rounded-full border border-amber-400/30 opacity-70 pointer-events-none" />
 
-        {/* Secondary Dotted Bead Guide */}
-        <div className="absolute inset-4 rounded-full border border-dashed border-[var(--border-line)] pointer-events-none opacity-40" />
+        {/* Middle Concentric Brass Ring */}
+        <div className="absolute inset-2.5 rounded-full border border-white/10 pointer-events-none" />
+
+        {/* Inner Dotted Meditation Guide */}
+        <div className="absolute inset-5 rounded-full border border-dashed border-amber-500/20 pointer-events-none" />
 
         {/* Sacred Top Glyph Mark */}
-        <div className="text-[11px] font-devanagari text-saffron-600 dark:text-saffron-400 opacity-70 mb-0.5 group-hover:scale-110 transition-transform">
-          ॐ
+        <div className="text-sm min-[380px]:text-base font-devanagari text-amber-400 font-bold drop-shadow-[0_0_8px_rgba(245,158,11,0.6)] mb-0.5 group-hover:scale-110 transition-transform">
+          🕉
         </div>
 
-        {/* Central 'जप' Action Text */}
-        <span className="text-3xl sm:text-4xl font-devanagari font-bold text-saffron-800 dark:text-saffron-300 tracking-wider drop-shadow-sm">
+        {/* Central 'जप' Action Text - Extra Large & Legible */}
+        <span className="text-4xl min-[380px]:text-5xl sm:text-[54px] font-devanagari font-extrabold text-amber-100 tracking-wider drop-shadow-[0_2px_12px_rgba(245,158,11,0.5)]">
           जप
         </span>
 
-        {/* Quiet Subtext */}
-        <span className="text-[10px] font-devanagari text-[var(--text-muted)] mt-1 tracking-wider opacity-70">
+        {/* Clear Tactile Subtext */}
+        <span className="text-[11px] min-[380px]:text-xs font-devanagari text-amber-200/70 mt-1 tracking-widest uppercase">
           स्पर्श करें
         </span>
       </button>
 
       {/* Subtle Hint */}
       <div className="flex items-center gap-2 mt-2 opacity-60">
-        <span className="text-[11px] font-devanagari text-[var(--text-muted)]">
+        <span className="text-[11px] font-devanagari text-amber-200/50">
           स्क्रीन स्पर्श या स्पेसबार दबाएं
         </span>
       </div>

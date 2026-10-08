@@ -12,8 +12,8 @@ export function triggerBeadHaptic(enabled = true) {
 export function triggerCompletionHaptic(enabled = true) {
   if (!enabled || typeof window === 'undefined' || !navigator.vibrate) return;
   try {
-    // Gentle double pulse pattern
-    navigator.vibrate([40, 60, 75]);
+    // Sacred rhythmic celebration vibration: unmistakable triple resonant pulse
+    navigator.vibrate([80, 70, 120, 70, 180]);
   } catch {
     // Graceful fallback
   }

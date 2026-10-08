@@ -5,13 +5,16 @@ import {
   getTodayKey,
   DEFAULT_STATE,
 } from '../utils/storage';
-import { playJaapSound, playBellSound } from '../utils/sound';
+import { playJaapSound, playBellSound, playSingingBowlChime } from '../utils/sound';
 import { triggerBeadHaptic, triggerCompletionHaptic } from '../utils/haptics';
 
 export function useJaapCounter() {
   const [state, setState] = useState(() => loadStoredState());
   const [isCompletedModalOpen, setIsCompletedModalOpen] = useState(false);
+  const [isCelebrating, setIsCelebrating] = useState(false);
+  const [celebrationInfo, setCelebrationInfo] = useState(null);
   const undoStackRef = useRef([]);
+  const celebrationTimerRef = useRef(null);
 
   // Sync state changes to localStorage
   useEffect(() => {
@@ -73,17 +76,32 @@ export function useJaapCounter() {
           },
         };
 
-        // Feedback
+        // Feedback: Singing bowl resonant chime + bell chime
         playJaapSound(prev.soundMode);
         if (prev.soundMode !== 'off') {
+          playSingingBowlChime();
           setTimeout(() => playBellSound(), 180);
         }
         triggerCompletionHaptic(prev.vibrationEnabled);
-        setIsCompletedModalOpen(true);
+
+        // Devotional non-blocking celebration state
+        setIsCelebrating(true);
+        setCelebrationInfo({
+          malaCount: newCompletedMalas,
+          beadCount: prev.malaSize,
+          mantra: prev.selectedMantra,
+        });
+
+        if (celebrationTimerRef.current) {
+          clearTimeout(celebrationTimerRef.current);
+        }
+        celebrationTimerRef.current = setTimeout(() => {
+          setIsCelebrating(false);
+        }, 3200);
 
         return {
           ...prev,
-          currentBead: prev.malaSize, // Show 108 / 108 upon completion
+          currentBead: 0, // Immediately rollover to 0 for seamless continuous chanting
           completedMalas: newCompletedMalas,
           totalJaap: newTotalJaap,
           lifetimeTotalJaap: newLifetimeJaap,
@@ -273,6 +291,8 @@ export function useJaapCounter() {
     state,
     isCompletedModalOpen,
     setIsCompletedModalOpen,
+    isCelebrating,
+    celebrationInfo,
     incrementJaap,
     startNextMala,
     undo,
