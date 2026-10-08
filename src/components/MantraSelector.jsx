@@ -1,16 +1,7 @@
 import React, { useState } from 'react';
-import { ChevronDown, Plus, Check, X, Sparkles } from 'lucide-react';
+import { ChevronDown, Plus, Check, X } from 'lucide-react';
 import { getDeityInfo } from './DeityDarshan';
-
-export const MANTRAS_LIST = [
-  'श्री राम',
-  'ॐ नमः शिवाय',
-  'राधे राधे',
-  'श्री कृष्ण',
-  'हरे कृष्ण',
-  'ॐ हनुमते नमः',
-  'गायत्री मंत्र'
-];
+import { MANTRAS_LIST } from '../constants/mantras';
 
 export function MantraSelector({
   selectedMantra,
