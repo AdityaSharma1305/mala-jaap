@@ -28,7 +28,6 @@ export default function App() {
     setMalaSize,
     setSoundMode,
     setVibrationEnabled,
-    setTheme,
     setDailyGoal,
     clearAllData,
   } = useJaapCounter();
@@ -54,34 +53,17 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleEsc);
   }, [isDhyanMode]);
 
-  // Apply theme to document element and sync mobile OS status bar color
+  // Permanently enforce sacred Dark Theme (संध्या दीप) and mobile OS status bar color
   useEffect(() => {
     const root = document.documentElement;
-    root.setAttribute('data-theme', state.theme);
-    if (state.theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
+    root.setAttribute('data-theme', 'dark');
+    root.classList.add('dark');
 
     const metaTheme = document.getElementById('meta-theme-color');
     if (metaTheme) {
-      if (state.theme === 'dark') {
-        metaTheme.setAttribute('content', '#171412');
-      } else if (state.theme === 'sandalwood') {
-        metaTheme.setAttribute('content', '#EFE6D8');
-      } else {
-        metaTheme.setAttribute('content', '#FBF8F2');
-      }
+      metaTheme.setAttribute('content', '#171412');
     }
-  }, [state.theme]);
-
-  // Cycle themes: light -> sandalwood -> dark -> light
-  const handleCycleTheme = () => {
-    const sequence = ['light', 'sandalwood', 'dark'];
-    const nextIndex = (sequence.indexOf(state.theme) + 1) % sequence.length;
-    setTheme(sequence[nextIndex]);
-  };
+  }, []);
 
   // Quick sound cycling: off -> bell -> click -> off
   const handleCycleSound = () => {
@@ -91,15 +73,13 @@ export default function App() {
   };
 
   return (
-    <div className="relative min-h-[100dvh] w-full flex flex-col justify-between paper-texture overflow-x-hidden transition-colors duration-500">
+    <div className="relative min-h-[100dvh] w-full flex flex-col justify-between paper-texture overflow-x-hidden transition-colors duration-500 bg-[#171412] text-[#E8DFD5]">
       {/* Sacred Temple Ghee Lamps & Ambient Jyoti Glow */}
       <SacredDiyaGlow enabled={true} />
 
       {/* 1. Header (Hidden during Dhyan Mode for complete focus) */}
       {!isDhyanMode ? (
         <Header
-          theme={state.theme}
-          onCycleTheme={handleCycleTheme}
           soundMode={state.soundMode}
           onCycleSound={handleCycleSound}
           isDhyanMode={isDhyanMode}
@@ -110,12 +90,12 @@ export default function App() {
       ) : (
         /* Minimal Dhyan mode exit bar */
         <div className="w-full max-w-md mx-auto px-4 pt-3 flex justify-between items-center z-20">
-          <span className="text-xs font-devanagari text-saffron-600 dark:text-saffron-400 font-bold">
+          <span className="text-xs font-devanagari text-amber-400 font-bold">
             🕉 ध्यान मुद्रा (एकाग्र चित्त)
           </span>
           <button
             onClick={() => setIsDhyanMode(false)}
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-surface)] text-[var(--text-muted)] hover:text-[var(--text-main)] text-xs font-devanagari border border-[var(--border-line)] tap-bounce"
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 text-amber-200/70 hover:text-amber-100 text-xs font-devanagari border border-white/10 tap-bounce"
           >
             <EyeOff className="w-3.5 h-3.5" />
             <span>समाप्त करें</span>
@@ -171,7 +151,7 @@ export default function App() {
             <button
               onClick={() => setIsProgressOpen(true)}
               aria-label="आज का दैनिक विवरण देखें"
-              className="group inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-devanagari text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-surface)] transition-all tap-bounce border border-[var(--border-line)]/80 shadow-sm"
+              className="group inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-devanagari text-amber-200/60 hover:text-amber-100 hover:bg-white/5 transition-all tap-bounce border border-white/10 shadow-sm"
             >
               <span>आज: {state.completedMalas} माला</span>
               <span className="opacity-40">•</span>
@@ -182,7 +162,7 @@ export default function App() {
         </div>
       </main>
 
-      {/* 3. Devotional Footer with Sanskrit Epigram & Privacy/PWA info */}
+      {/* 3. Devotional Footer with Sanskrit Epigram, Aditya Sharma credit & PWA info */}
       {!isDhyanMode && <Footer />}
 
       {/* 4. Mala Completion Experience */}
@@ -223,8 +203,6 @@ export default function App() {
         onChangeSoundMode={setSoundMode}
         vibrationEnabled={state.vibrationEnabled}
         onToggleVibration={setVibrationEnabled}
-        theme={state.theme}
-        onChangeTheme={setTheme}
         onClearAllData={clearAllData}
       />
     </div>

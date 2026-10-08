@@ -47,7 +47,7 @@ export const DEFAULT_STATE = {
   customMantras: [],
   soundMode: 'off',
   vibrationEnabled: true,
-  theme: 'light',
+  theme: 'dark', // Pure serene dark theme
   dailyGoal: 5, // 5 malas default goal
   history: {},
   lastActiveDate: getTodayKey(),
@@ -66,6 +66,7 @@ export function loadStoredState() {
       return {
         ...DEFAULT_STATE,
         ...parsed,
+        theme: 'dark', // Enforce dark theme
         currentBead: 0,
         completedMalas: 0,
         totalJaap: 0,
@@ -76,6 +77,7 @@ export function loadStoredState() {
     return {
       ...DEFAULT_STATE,
       ...parsed,
+      theme: 'dark', // Enforce dark theme
     };
   } catch (err) {
     console.error('Failed to load Mala Jaap state from localStorage:', err);

@@ -176,11 +176,7 @@ export function MalaVisualization({
             const isCurrent = bead.index === currentBead;
             const isMilestone = bead.isMilestone;
 
-            let fill = 'url(#pendingBeadGrad)';
-            let stroke = 'none';
-            let strokeWidth = 0;
-            let r = baseBeadRadius;
-            let filter = 'url(#softBeadShadow)';
+            let filter = isCurrent ? 'url(#activeGlow)' : undefined;
 
             if (isCompleted) {
               fill = 'url(#completedBeadGrad)';
@@ -190,7 +186,6 @@ export function MalaVisualization({
               stroke = '#FFFFFF';
               strokeWidth = 1.4;
               r = baseBeadRadius + 2.5;
-              filter = 'url(#activeGlow)';
             }
 
             return (

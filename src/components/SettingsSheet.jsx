@@ -145,33 +145,7 @@ export function SettingsSheet({
           </button>
         </div>
 
-        {/* Theme Setting */}
-        <div className="space-y-2">
-          <label className="text-xs font-devanagari font-medium text-[var(--text-muted)] flex items-center gap-1.5">
-            <Palette className="w-4 h-4 text-saffron-600 dark:text-saffron-400" />
-            <span>रंग रूप (Theme)</span>
-          </label>
-          <div className="grid grid-cols-3 gap-2">
-            {[
-              { id: 'light', label: 'हस्तनिर्मित कागज़', sub: 'Warm Ivory' },
-              { id: 'dark', label: 'संध्या दीप', sub: 'Temple Night' },
-              { id: 'sandalwood', label: 'चंदन', sub: 'Sandalwood' },
-            ].map((t) => (
-              <button
-                key={t.id}
-                onClick={() => onChangeTheme(t.id)}
-                className={`py-2 px-2 rounded-xl text-center border font-devanagari text-xs transition-all tap-bounce ${
-                  theme === t.id
-                    ? 'border-saffron-500 bg-saffron-50 dark:bg-saffron-950/40 text-saffron-700 dark:text-saffron-300 font-semibold shadow-sm'
-                    : 'border-[var(--border-line)] bg-[var(--bg-surface)] text-[var(--text-main)]'
-                }`}
-              >
-                <div>{t.label}</div>
-                <div className="text-[9px] text-[var(--text-muted)] mt-0.5">{t.sub}</div>
-              </button>
-            ))}
-          </div>
-        </div>
+
 
         {/* Clear Data Section */}
         <div className="pt-4 border-t border-[var(--border-line)]">
