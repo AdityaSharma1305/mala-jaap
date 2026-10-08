@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, WifiOff, Download, Heart } from 'lucide-react';
+import { ShieldCheck, WifiOff, Download, Sparkles } from 'lucide-react';
 
 export function Footer() {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -31,18 +31,26 @@ export function Footer() {
   };
 
   return (
-    <footer className="w-full max-w-md mx-auto px-4 pt-3 pb-6 text-center z-10 select-none">
+    <footer className="w-full max-w-md mx-auto px-4 pt-3 pb-6 safe-bottom text-center z-10 select-none">
       <div className="border-t border-[var(--border-line)] pt-3 pb-1 flex flex-col items-center gap-2">
         {/* Sacred Sanskrit Epigram */}
         <p className="text-xs font-devanagari text-saffron-800 dark:text-saffron-300 font-medium italic opacity-90">
           “मननात् त्रायते इति मन्त्रः”
         </p>
 
-        {/* Devotional Micro Features */}
-        <div className="flex flex-wrap items-center justify-center gap-3 text-[10px] font-devanagari text-[var(--text-muted)] opacity-80">
+        {/* Creator Name & Dedication */}
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[var(--bg-surface)] border border-[var(--border-line)] shadow-inner">
+          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+          <span className="text-[11px] font-devanagari text-[var(--text-main)] font-semibold">
+            संकल्पना एवं निर्माण: <span className="text-saffron-700 dark:text-saffron-400 font-bold">आदित्य शर्मा (Aditya Sharma)</span>
+          </span>
+        </div>
+
+        {/* Devotional Micro Badges */}
+        <div className="flex flex-wrap items-center justify-center gap-2.5 text-[10px] font-devanagari text-[var(--text-muted)] opacity-80 mt-0.5">
           <span className="inline-flex items-center gap-1">
             <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-            <span>पूर्णतः गोपनीय (On-Device)</span>
+            <span>100% On-Device (निजी)</span>
           </span>
           <span>•</span>
           <span className="inline-flex items-center gap-1">
@@ -57,18 +65,16 @@ export function Footer() {
         {deferredPrompt && !isInstalled && (
           <button
             onClick={handleInstallClick}
-            className="mt-1 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-saffron-50 dark:bg-saffron-950/60 border border-saffron-300 dark:border-saffron-800 text-[11px] font-devanagari font-medium text-saffron-800 dark:text-saffron-300 hover:bg-saffron-100 transition-all tap-bounce shadow-sm"
+            className="mt-1 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-saffron-50 dark:bg-saffron-950/60 border border-saffron-300 dark:border-saffron-800 text-[11px] font-devanagari font-semibold text-saffron-800 dark:text-saffron-300 hover:bg-saffron-100 transition-all tap-bounce shadow-sm"
           >
-            <Download className="w-3 h-3" />
+            <Download className="w-3.5 h-3.5" />
             <span>फ़ोन पर ऐप इंस्टॉल करें</span>
           </button>
         )}
 
-        {/* Copyright & Reverence */}
-        <div className="text-[10px] font-devanagari text-[var(--text-muted)]/70 mt-1 flex items-center justify-center gap-1">
-          <span>Mala Jaap • जप में मन, मन में नाम</span>
-          <span>•</span>
-          <span>भक्ति एवं श्रद्धा भाव से समर्पित</span>
+        {/* Dedicated Devotional Tagline */}
+        <div className="text-[10px] font-devanagari text-[var(--text-muted)]/75 mt-0.5">
+          Mala Jaap • जप में मन, मन में नाम • समस्त साधकों के लिए सप्रेम समर्पित
         </div>
       </div>
     </footer>

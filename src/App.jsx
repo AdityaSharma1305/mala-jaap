@@ -54,7 +54,7 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleEsc);
   }, [isDhyanMode]);
 
-  // Apply theme to document element
+  // Apply theme to document element and sync mobile OS status bar color
   useEffect(() => {
     const root = document.documentElement;
     root.setAttribute('data-theme', state.theme);
@@ -62,6 +62,17 @@ export default function App() {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
+    }
+
+    const metaTheme = document.getElementById('meta-theme-color');
+    if (metaTheme) {
+      if (state.theme === 'dark') {
+        metaTheme.setAttribute('content', '#171412');
+      } else if (state.theme === 'sandalwood') {
+        metaTheme.setAttribute('content', '#EFE6D8');
+      } else {
+        metaTheme.setAttribute('content', '#FBF8F2');
+      }
     }
   }, [state.theme]);
 

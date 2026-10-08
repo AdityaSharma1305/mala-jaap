@@ -24,7 +24,7 @@ export function Header({
   };
 
   return (
-    <header className="w-full max-w-md mx-auto px-4 pt-3 pb-1 flex items-center justify-between z-20">
+    <header className="w-full max-w-md mx-auto px-4 pt-3 pb-1 safe-top flex items-center justify-between z-20">
       {/* Brand & Devotional Om */}
       <div className="flex items-center gap-2">
         <span className="text-xl font-devanagari font-bold text-saffron-600 dark:text-saffron-400 select-none">
