@@ -13,8 +13,8 @@ export default defineConfig({
         name: 'Mala Jaap - जप में मन, मन में नाम',
         short_name: 'Mala Jaap',
         description: 'A serene digital prayer space for naam jap and mala meditation.',
-        theme_color: '#FBF8F2',
-        background_color: '#FBF8F2',
+        theme_color: '#171412',
+        background_color: '#171412',
         display: 'standalone',
         orientation: 'portrait',
         icons: [

@@ -177,10 +177,16 @@ export function MalaVisualization({
             const isMilestone = bead.isMilestone;
 
             let filter = isCurrent ? 'url(#activeGlow)' : undefined;
+            let fill = 'url(#pendingBeadGrad)';
+            let stroke = 'rgba(255, 255, 255, 0.2)';
+            let strokeWidth = 0.5;
+            let r = baseBeadRadius;
 
             if (isCompleted) {
               fill = 'url(#completedBeadGrad)';
-              r = baseBeadRadius + 0.5;
+              stroke = '#D4AF37';
+              strokeWidth = 0.8;
+              r = baseBeadRadius + 0.6;
             } else if (isCurrent) {
               fill = 'url(#activeBeadGrad)';
               stroke = '#FFFFFF';
